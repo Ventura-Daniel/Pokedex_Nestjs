@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UploadedFile } from '@nestjs/common';
 import { PokemonService } from './pokemon.service';
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
 import { UpdatePokemonDto } from './dto/update-pokemon.dto';
 import { ParseMongoIdPipe } from 'src/common/pipes/parse-mongo-id.pipe';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Controller('pokemon')
 export class PokemonController {
@@ -13,9 +14,16 @@ export class PokemonController {
     return this.pokemonService.create(createPokemonDto);
   }
 
+  @Post('file')
+  createFile(@UploadedFile() file: any) {
+    return {file};
+  }
+
+
   @Get()
-  findAll() {
-    return this.pokemonService.findAll();
+  findAll( @Query() paginationDto : PaginationDto) {
+    console.log({paginationDto});
+    return this.pokemonService.findAll(paginationDto);
   }
 
   @Get(':id')
